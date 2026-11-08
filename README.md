@@ -58,6 +58,21 @@ dota2_bp action=refresh
 
 市场条目来自 `awesome-dsh-plugin` 精选列表。发布步骤见 [MARKET.md](MARKET.md)；npm 包名已准备为 `dsh-dota2bp`。
 
+## 出装数据（feat/items）
+
+`tools/update-items.mjs` 单独采集出装数据，写入 `<dataDir>/items.json`，与每日对位刷新解耦（建议每周跑一次）：
+
+```sh
+node tools/update-items.mjs --data-dir .data     # 拉 constants/items + 每英雄 itemPopularity
+node tools/plan-build.mjs --hero 半人马战行者 --pos 3
+node tools/plan-build.mjs --hero 敌法师 --pos 1 --json
+```
+
+- 数据口径：OpenDota `heroes/{id}/itemPopularity` 的开局/前期/中期/后期四档购买次数，**全分位混合统计、不区分位置**。
+- 位置修正来自 `builds.js` 的策展权重表（`POSITION_WEIGHTS`），不是分位置采样；展示里已明写「按购买率排序，不含胜负信息」。
+- 过滤规则：消耗品只留开局；成品折叠其组件；每个道具归到出场率最高的阶段；无定位标签的纯属性中件（如 Ultimate Orb）不单列。
+- 补丁标记取自 `constants/patch` 最新版本；OpenDota 的购买数据本身是跨补丁聚合，只能当「本补丁附近的常识」。
+
 ## 说明
 
 推荐和预测是决策辅助，不是胜率承诺。公开对位样本每个英雄每天约数千局，样本较少的对位会通过收缩与置信度降低权重。模型训练与预测不需要额外 API Key。

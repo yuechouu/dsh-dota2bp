@@ -46,6 +46,10 @@
   "engines": {
     "dsh": ">=0.2.1-rc.3"
   },
+  "scripts": {
+    "items:update": "node tools/update-items.mjs",
+    "build:show": "node tools/plan-build.mjs"
+  },
   "publishConfig": {
     "access": "public"
   },
